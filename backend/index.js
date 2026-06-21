@@ -5,6 +5,12 @@ const { userRouter } = require('./routes/user.js');
 const { expenseRouter } = require('./routes/expense.js');
 const { default: mongoose } = require('mongoose');
 
+const dns = require('dns');
+dns.setServers([
+  "1.1.1.1",
+  "8.8.8.8"
+]);
+
 const app = express();
 app.use(express.json());
 
