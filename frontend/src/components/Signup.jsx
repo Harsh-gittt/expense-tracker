@@ -4,13 +4,14 @@ const Signup = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPass] = useState("");
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    const response = axios.post("http://localhost:3000/user/signup",{
+    const response = await axios.post("http://localhost:3000/user/signup",{
         "email": email,
         "password": password,
         "name": userName
     })
+    console.log(response.data)
   };
 
   return (
