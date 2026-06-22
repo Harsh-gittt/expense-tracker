@@ -1,16 +1,10 @@
-const {Router} = require('express');
+const { Router } = require('express');
 const { authMiddleware } = require('../middlewares/auth');
 const { expenseModel } = require('../schema/db');
 
 const expenseRouter = Router();
 
-expenseRouter.get('/', function(req, res){
-  res.json({
-    message: "some message"
-  })
-})
-
-expenseRouter.post('/', authMiddleware, async function(req, res){
+expenseRouter.post('/', authMiddleware, async function (req, res) {
   const userId = req.userId;
   const { title, amount, date, category, note } = req.body;
 
@@ -25,17 +19,17 @@ expenseRouter.post('/', authMiddleware, async function(req, res){
     });
 
     res.json({
-      message:"Expense added successfully!",
+      message: "Expense added successfully!",
       expenseId: expense._id
     })
-  } catch(e) {
+  } catch (e) {
     res.json({
       message: e.message
     })
   }
 })
 
-expenseRouter.put('/:expenseId', authMiddleware, async function(req, res){
+expenseRouter.put('/:expenseId', authMiddleware, async function (req, res) {
   const userId = req.userId;
   const expenseId = req.params.expenseId;
 
@@ -46,13 +40,13 @@ expenseRouter.put('/:expenseId', authMiddleware, async function(req, res){
         userId: userId
       },
       req.body,
-      {new: true}
+      { new: true }
     );
 
     res.json({
       message: "Expense updated Successfully!"
     });
-  } catch(e) {
+  } catch (e) {
     res.json({
       message: e.message
     })
@@ -60,10 +54,26 @@ expenseRouter.put('/:expenseId', authMiddleware, async function(req, res){
 
 })
 
-expenseRouter.post('/delete', function(req, res){
-  res.json({
-    message: "some message"
-  })
+expenseRouter.delete('/:expenseId', authMiddleware, async function (req, res) {
+  const userId = req.userId;
+  const expenseId = req.params.expenseId;
+
+  const deleted = await expenseModel.findOneAndDelete(
+    {
+      _id: expenseId,
+      userId: userId
+    }
+  )
+
+  if (deleted) {
+    res.json({
+      message: "expense deleted successfully!"
+    })
+  } else {
+    res.status(403).json({
+      message: "expense not found"
+    })
+  }
 })
 
 module.exports = {
