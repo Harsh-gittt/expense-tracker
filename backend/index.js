@@ -4,6 +4,7 @@ const express = require('express');
 const { userRouter } = require('./routes/user.js');
 const { expenseRouter } = require('./routes/expense.js');
 const { default: mongoose } = require('mongoose');
+const cors = require('cors');
 
 const dns = require('dns');
 dns.setServers([
@@ -11,7 +12,9 @@ dns.setServers([
   "8.8.8.8"
 ]);
 
+
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use('/user', userRouter);
