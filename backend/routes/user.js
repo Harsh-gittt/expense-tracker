@@ -2,7 +2,9 @@ const {Router} = require('express');
 const {z} = require('zod');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {userModel} = require('../schema/db.js')
+const {userModel, expenseModel} = require('../schema/db.js');
+const { authMiddleware } = require('../middlewares/auth.js');
+const expense = require('./expense.js');
 
 const userRouter = Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -89,9 +91,16 @@ userRouter.post('/signin', async function(req, res){
 
 })
 
-userRouter.get('/profile', function(req, res){
+userRouter.get('/', authMiddleware, async function(req, res){
+  const userId = req.userId;
+
+  const expenses = await expenseModel.find({
+    userId: userId
+  })
+
   res.json({
-    message: "some message"
+    message: "These are all your expenses- ",
+    expenses: expenses
   })
 })
 
