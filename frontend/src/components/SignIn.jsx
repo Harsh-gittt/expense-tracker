@@ -1,23 +1,33 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const SignIn = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPass] = useState("");
+
+  
   const submitHandler = async (e) => {
+
     e.preventDefault();
-    const response = await axios.post("http://localhost:3000/user/signin",{
-        "email": email,
-        "password": password
-      
+    const response = await axios.post("http://localhost:3000/user/signin", {
+      "email": email,
+      "password": password
+
     })
     console.log(response.data)
-    localStorage.setItem("token",response.data.token)
+    localStorage.setItem("token", response.data.token)
+    navigate("/user");
+
   };
 
   return (
     <div className="flex h-screen w-screen justify-center items-center">
       <form className=" shadow-2xl flex flex-col  h-90 w-120 justify-center items-center px-8 gap-6 relative rounded-3xl">
-      
+
 
         <input
           onChange={(e) => setEmail(e.target.value)}
@@ -38,6 +48,13 @@ const SignIn = () => {
         >
           Sign in
         </button>
+
+        <div className="text-gray-600">
+          New user ? {" "}
+          <Link className='text-blue-700 cursor-pointer' to="/signup">
+            Signup
+          </Link>
+        </div>
       </form>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 const Signup = () => {
   const [userName, setUserName] = useState("");
@@ -6,10 +7,10 @@ const Signup = () => {
   const [password, setPass] = useState("");
   const submitHandler = async (e) => {
     e.preventDefault();
-    const response = await axios.post("http://localhost:3000/user/signup",{
-        "email": email,
-        "password": password,
-        "name": userName
+    const response = await axios.post("http://localhost:3000/user/signup", {
+      "email": email,
+      "password": password,
+      "name": userName
     })
     console.log(response.data)
   };
@@ -43,6 +44,13 @@ const Signup = () => {
         >
           Sign up
         </button>
+
+        <div className="text-gray-600">
+          Already have an account ? {" "}
+          <Link className= 'text-blue-700 cursor-pointer' to="/signin">
+            Signin
+          </Link>
+        </div>
       </form>
     </div>
   );

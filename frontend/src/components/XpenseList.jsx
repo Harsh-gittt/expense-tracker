@@ -1,7 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card';
+import axios from 'axios';
 
 const XpenseList = () => {
+
+    const arrExpenses = [];
+
+    useEffect(() => {
+        const fetchExpenses = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:3000/user/",
+                    {
+                        headers: {
+                            Authorization: localStorage.getItem("token")
+                        }
+                    }
+                );
+
+                arrExpenses = response.data.expenses;
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchExpenses();
+    }, []);
+
+
+    
+
     const [expenses, setExpenses] = useState([]);
     const [showCard, setShowCard] = useState(false);
 
