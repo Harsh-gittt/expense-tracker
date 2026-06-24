@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
+import EditExpense from './EditExpense';
 const XpenseList = () => {
 
-    const arrExpenses = [];
-
+  
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
@@ -18,7 +19,7 @@ const XpenseList = () => {
                     }
                 );
 
-                arrExpenses = response.data.expenses;
+               setExpenses(response.data.expenses);
             } catch (error) {
                 console.error(error);
             }
@@ -32,6 +33,7 @@ const XpenseList = () => {
 
     const [expenses, setExpenses] = useState([]);
     const [showCard, setShowCard] = useState(false);
+    const [editCard, setEditCard] = useState(false)
 
     const addExpense = (expense) => {
         setExpenses((prev) => [...prev, expense]);
@@ -42,12 +44,25 @@ const XpenseList = () => {
         0
     );
 
-    const deleteExpense = (indexToDelete) => {
-        setExpenses(
-            expenses.filter((_, index) => index !== indexToDelete)
-        );
+    const deleteExpense = async(id) => {
+       
+          const response = await axios.delete(`http://localhost:3000/expense/${id}`,
+            {
+                headers: {
+                    Authorization : localStorage.getItem("token")
+                }
+            }
+          )
+          if(response){
+            navigate("/user/")
+            console.log(response.data)
+            setExpenses(expenses.filter(expense => expense._id !== id));
+          }
     };
+    const editHandler = (e) =>{
+        setEditCard(true)
 
+    }
     return (<div className="min-h-screen bg-gray-100 p-6">
         {/* Sticky Header */} <div className="sticky top-0 z-10 bg-gray-100 pb-6"> <div className="flex items-center justify-between mb-6"> <h1 className="text-3xl font-bold text-gray-800">
             Expense Dashboard </h1>
@@ -91,7 +106,14 @@ const XpenseList = () => {
                 onClose={() => setShowCard(false)}
                 onAddExpense={addExpense}
             />
+        
         )}
+        {
+            setEditCard&&(
+                <EditExpense 
+                  onClose={() => setEditCard(false)}/>
+            )
+        }
 
         {/* Expense Table */}
 
@@ -113,9 +135,9 @@ const XpenseList = () => {
                         No expenses added yet.
                     </div>
                 ) : (
-                    expenses.map((expense, index) => (
+                    expenses.map((expense) => (
                         <div
-                            key={index}
+                            key={expense._id}
                             className="grid grid-cols-5 items-center p-4 border-b hover:bg-gray-50 transition-all duration-200"
                         >
                             <div className="font-semibold text-gray-800">
@@ -137,12 +159,13 @@ const XpenseList = () => {
                             </div>
 
                             <div className="flex gap-2">
-                                <button className="bg-yellow-400 px-3 py-1 rounded-lg">
+                                <button onClick={()=>editHandler(expense._id)}
+                                className="bg-yellow-400 px-3 py-1 rounded-lg">
                                     Edit
                                 </button>
 
                                 <button
-                                    onClick={() => deleteExpense(index)}
+                                    onClick={() => deleteExpense(expense._id)}
                                     className="bg-red-500 text-white px-3 py-1 rounded-lg cursor-pointer"
                                 >
                                     Delete
