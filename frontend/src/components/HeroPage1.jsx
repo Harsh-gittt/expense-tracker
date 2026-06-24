@@ -1,10 +1,8 @@
-import React from 'react'
-
 const HeroPage1 = () => {
   return (
     <div className="flex flex-1">
 
-      {/* Left — content */}
+      {/* Left content */}
       <div className="w-1/2 flex flex-col justify-center px-16 py-12 bg-white">
 
         <span className='inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-600 text-xs font-semibold px-3 py-1.5 rounded-full w-fit mb-6 ring-1 ring-emerald-100'>
@@ -18,7 +16,7 @@ const HeroPage1 = () => {
         </h1>
 
         <p className='text-gray-500 text-base leading-relaxed mb-8 max-w-md'>
-          Monitor spending, set smart budgets, and reach your financial goals — all in one place. Built for people who want clarity, not complexity.
+          Monitor spending, set smart budgets, and reach your financial goals &mdash; all in one place. Built for people who want clarity, not complexity.
         </p>
 
         <div className='flex gap-3 mb-12'>
@@ -26,7 +24,7 @@ const HeroPage1 = () => {
             Get Started Free
           </button>
           <button className='border border-gray-200 text-gray-600 rounded-xl px-7 py-3.5 font-semibold text-sm transition-all duration-300 hover:border-gray-400 hover:text-gray-900 active:scale-95'>
-            See How It Works →
+            See How It Works &rarr;
           </button>
         </div>
 
@@ -41,13 +39,13 @@ const HeroPage1 = () => {
             <p className='text-gray-400 text-xs mt-0.5 font-medium uppercase tracking-wide'>Tracked Monthly</p>
           </div>
           <div className='border-l border-gray-100 pl-10'>
-            <p className='text-2xl font-bold text-gray-900'>4.9 ★</p>
+            <p className='text-2xl font-bold text-gray-900'>4.9/5</p>
             <p className='text-gray-400 text-xs mt-0.5 font-medium uppercase tracking-wide'>User Rating</p>
           </div>
         </div>
       </div>
 
-      {/* Right — image */}
+      {/* Right image */}
       <div className='w-1/2 relative bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-100 flex items-center justify-center p-12 overflow-hidden'>
 
         {/* Decorative blobs */}

@@ -1,19 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
 
-const Card = ({ onClose, onAddExpense }) => {
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState("");
-  const [category, setCategory] = useState("Food");
-  const [note, setNote] = useState("");
+const EditExpense = ({ expense, onClose, onUpdate }) => {
+  const [title, setTitle] = useState(expense.title);
+  const [amount, setAmount] = useState(expense.amount);
+  const [date, setDate] = useState(expense.date);
+  const [category, setCategory] = useState(expense.category);
+  const [note, setNote] = useState(expense.note || "");
 
   const clickhandler = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/expense/",
+      await axios.put(
+        `http://localhost:3000/expense/${expense._id}`,
         {
           title,
           amount,
@@ -28,40 +28,31 @@ const Card = ({ onClose, onAddExpense }) => {
         }
       );
 
-      console.log(response.data);
+      const updatedExpense = {
+        ...expense,
+        title,
+        amount,
+        date,
+        category,
+        note,
+      };
 
-      const newExpense =
-        response.data.expense ||
-        response.data.data ||
-        (response.data.expenseId && {
-          _id: response.data.expenseId,
-          title,
-          amount,
-          date,
-          category,
-          note,
-        });
-
-      if (newExpense?._id) {
-        onAddExpense(newExpense);
-      }
-
+      onUpdate(updatedExpense);
       onClose();
     } catch (error) {
       console.log(error);
-      alert("Failed to add expense");
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="max-w-md w-full bg-white shadow-lg rounded-xl p-6 border">
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-2xl font-bold">Add Expense</h2>
+          <h2 className="text-2xl font-bold">Edit Expense</h2>
 
           <button
             onClick={onClose}
-            className="text-xl font-bold text-gray-500 hover:text-black"
+            className="text-gray-500 text-xl cursor-pointer"
           >
             &times;
           </button>
@@ -75,12 +66,10 @@ const Card = ({ onClose, onAddExpense }) => {
               </label>
 
               <input
+                type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                type="text"
-                placeholder="Enter expense title"
                 className="w-full border rounded-lg px-3 py-2"
-                required
               />
             </div>
 
@@ -90,12 +79,10 @@ const Card = ({ onClose, onAddExpense }) => {
               </label>
 
               <input
+                type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                type="number"
-                placeholder="Enter amount"
                 className="w-full border rounded-lg px-3 py-2"
-                required
               />
             </div>
           </div>
@@ -107,11 +94,10 @@ const Card = ({ onClose, onAddExpense }) => {
               </label>
 
               <input
+                type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                type="date"
                 className="w-full border rounded-lg px-3 py-2"
-                required
               />
             </div>
 
@@ -140,19 +126,18 @@ const Card = ({ onClose, onAddExpense }) => {
             </label>
 
             <textarea
+              rows="3"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              rows="3"
-              placeholder="Add a note..."
               className="w-full border rounded-lg px-3 py-2"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition cursor-pointer"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
           >
-            Add Expense
+            Save Changes
           </button>
         </form>
       </div>
@@ -160,4 +145,4 @@ const Card = ({ onClose, onAddExpense }) => {
   );
 };
 
-export default Card;
+export default EditExpense;
