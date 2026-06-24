@@ -20,7 +20,7 @@ expenseRouter.post('/', authMiddleware, async function (req, res) {
 
     res.json({
       message: "Expense added successfully!",
-      expenseId: expense._id
+      expense
     })
   } catch (e) {
     res.json({

@@ -1,10 +1,9 @@
-import React from 'react'
 import Navbar from './Navbar'
 import HeroPage1 from './HeroPage1'
 import axios from 'axios'
 const Page1 = () => {
 
-    const clickHandler = async(e)=>{
+    const clickHandler = async()=>{
         console.log(localStorage.getItem("token"))
         const response = await axios.get("http://localhost:3000/user/",{
             headers: {

@@ -1,75 +1,129 @@
-import React, { useState } from 'react'
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
 
-const Card = () => {
-
-
+const Card = ({ onClose, onAddExpense }) => {
   const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Food");
   const [note, setNote] = useState("");
 
-  async function clickhandler(e) {
+  const clickhandler = async (e) => {
     e.preventDefault();
-    console.log(localStorage.getItem("token"))
-    const response = await axios.post(
-    "http://localhost:3000/expense/",
-    {
-      title: title,
-      amount: amount,
-      date: date,
-      category: category,
-      note: note
-    },
-    {
-      headers: {
-        Authorization: localStorage.getItem("token")
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/expense/",
+        {
+          title,
+          amount,
+          date,
+          category,
+          note,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      const newExpense =
+        response.data.expense ||
+        response.data.data ||
+        (response.data.expenseId && {
+          _id: response.data.expenseId,
+          title,
+          amount,
+          date,
+          category,
+          note,
+        });
+
+      if (newExpense?._id) {
+        onAddExpense(newExpense);
       }
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+      alert("Failed to add expense");
     }
-  );
-    console.log(response.data)
-  }
+  };
+
   return (
-    <div>
-      <div className="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6 border">
-        <h2 className="text-2xl font-bold mb-5">Add Expense</h2>
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-xl p-6 border">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-2xl font-bold">Add Expense</h2>
 
-        <form className="space-y-4">
+          <button
+            onClick={onClose}
+            className="text-xl font-bold text-gray-500 hover:text-black"
+          >
+            &times;
+          </button>
+        </div>
 
-          <div className='flex gap-4'>
-            <div>
-              <label className="block text-sm font-medium mb-1">Title</label>
-              <input onChange={(e) => setTitle(e.target.value)}
+        <form onSubmit={clickhandler} className="space-y-4">
+          <div className="flex gap-4">
+            <div className="w-full">
+              <label className="block text-sm font-medium mb-1">
+                Title
+              </label>
+
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 type="text"
                 placeholder="Enter expense title"
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border rounded-lg px-3 py-2"
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Amount</label>
-              <input onChange={(e) => setAmount(e.target.value)}
+            <div className="w-full">
+              <label className="block text-sm font-medium mb-1">
+                Amount
+              </label>
+
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 type="number"
                 placeholder="Enter amount"
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border rounded-lg px-3 py-2"
+                required
               />
             </div>
           </div>
 
-          <div className='flex justify-between'>
-            <div>
-              <label className="block text-sm font-medium mb-1">Date</label>
-              <input onChange={(e) => setDate(e.target.value)}
+          <div className="flex gap-4">
+            <div className="w-full">
+              <label className="block text-sm font-medium mb-1">
+                Date
+              </label>
+
+              <input
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
                 type="date"
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border rounded-lg px-3 py-2"
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Category</label>
-              <select onChange={(e) => setCategory(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <div className="w-full">
+              <label className="block text-sm font-medium mb-1">
+                Category
+              </label>
+
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border rounded-lg px-3 py-2"
               >
                 <option>Food</option>
                 <option>Bills</option>
@@ -82,26 +136,28 @@ const Card = () => {
 
           <div>
             <label className="block text-sm font-medium mb-1">
-              Note <span className="text-gray-400">(Optional)</span>
+              Note
             </label>
-            <textarea onChange={(e) => setNote(e.target.value)}
+
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
               rows="3"
               placeholder="Add a note..."
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
+              className="w-full border rounded-lg px-3 py-2"
+            />
           </div>
 
-          <button onClick={clickhandler}
+          <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition active:scale-95 cursor-pointer"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition cursor-pointer"
           >
             Add Expense
           </button>
-
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
